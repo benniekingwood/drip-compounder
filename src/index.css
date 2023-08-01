@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #172554;
+}
+
+.markdown > * {
+  all: revert;
+}
+
+.active-account-info {
+  top: 49px;
+  left: 42px;
+}
