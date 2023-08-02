@@ -54,7 +54,7 @@ const CompoundButton = ({ disabled, roi, address, loadAccount }) => {
       } link link-hover  ${roi >= 1 ? "text-lime-400" : ""}`}
       onClick={isDisabled || isLoading ? () => {} : () => write?.()}
     >
-      Compound
+      ♺ Compound
     </a>
   );
 };

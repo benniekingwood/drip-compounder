@@ -185,7 +185,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       }`}
       onClick={disabled ? () => {} : () => claimWrite?.()}
     >
-      Take Profits
+      💸 Take Profits
     </a>
   );
 };

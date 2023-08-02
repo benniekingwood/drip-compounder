@@ -25,7 +25,7 @@ const WalletSection = () => {
               isConnected ? () => disconnect() : () => connect({ connector })
             }
           >
-            <div>{isConnected ? "Disconnect " : "Connect Wallet"}</div>
+            {isConnected ? "Disconnect " : "Connect Wallet"}
           </button>
         ))}
         {isConnected && (
