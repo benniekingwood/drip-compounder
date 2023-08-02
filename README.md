@@ -2,7 +2,7 @@
 
 This small dashboard will help for taking profits and compounding
 
-## Commands 
+## Getting Started 
 
 `npm install --legacy-peer-deps`
 
