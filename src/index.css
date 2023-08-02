@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.markdown > * {
+  all: revert;
+}
+
+.active-account-info {
+  top: 49px;
+  left: 42px;
+}
