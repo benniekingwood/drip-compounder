@@ -54,7 +54,7 @@ const App = () => {
               pauseOnFocusLoss
               draggable
               pauseOnHover
-              className="w-full toast toast-top toast-start"
+              className="w-full"
             />
           </header>
           <AccountList />

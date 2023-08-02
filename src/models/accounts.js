@@ -1,7 +1,8 @@
 let accounts = [];
 
 try {
-  const rawAccounts = localStorage.getItem("dc-accounts") || '[]';
+  // grab the accounts list from localStorage - see Help.md for JSON format
+  const rawAccounts = localStorage.getItem("dc-accounts") || "[]";
 
   accounts = JSON.parse(rawAccounts);
 } catch (e) {
