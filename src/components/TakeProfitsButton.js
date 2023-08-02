@@ -24,7 +24,7 @@ import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
 
 /**
  * This component will handle all logic related to taking your profits
- * @param {Object} props - {Boolean} disabled, {Number} roi, {String} address, {Function} loadAccount 
+ * @param {Object} props - {Boolean} disabled, {Number} roi, {String} address, {Function} loadAccount
  * @returns HTML for the take profits button
  */
 const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
@@ -38,7 +38,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
   });
   const { data: claimData, write: claimWrite } = useContractWrite(claimConfig);
 
-  // wait for the claim 
+  // wait for the claim
   useWaitForTransaction({
     hash: claimData?.hash,
     onSuccess() {
@@ -75,7 +75,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
 
       const { hash } = await sendTransaction(config);
       const receipt = await waitForTransaction({ hash });
-   
+
       if (receipt.status === "success") {
         toast.success(
           () => (
@@ -102,7 +102,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
    * This function will perform the swap on the DRIP dex
    * @param {Number} dripBalance - the drip balance in the account
    * @param {Number} minBnbReceived - the minimum amount of BNB you can receive for swapping your DRIP
-   * @returns Promise 
+   * @returns Promise
    */
   const doSwap = async (dripBalance, minBnbReceived) => {
     if (dripBalance === 0 || minBnbReceived === 0) return;
@@ -130,9 +130,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
           ),
           {}
         );
-        console.log(
-          "3. Send to Cryto.com Wallet (0x43F9E826C7D6e280C60425FbdAe5622195C15Cc2)"
-        );
+
         await sendToCrytoDotComWallet();
       }
     } catch (e) {
@@ -141,7 +139,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
   };
 
   /**
-   * This function will perform the steps necessary to prepare for the 
+   * This function will perform the steps necessary to prepare for the
    * DRIP to BNB swap
    */
   const prepareSwap = async () => {
@@ -152,9 +150,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       chainId: chain.id,
     });
 
-    // console.log("Balance:", balance);
     dripBalance = Web3.utils.toWei(balance?.formatted, "ether");
-    // console.log(dripBalance);
 
     // grab how much BNB you can recieve for your DRIP, using the DRIP contract
     const data = await readContract({
@@ -164,16 +160,14 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       args: [dripBalance],
     });
 
-    // console.log("getTokenToBnbInputPrice", data);
     const dripPriceInBNB = Web3.utils.fromWei(data, "ether");
-    // console.log("dripPriceInBNB", dripPriceInBNB);
-    
+
     // apply the slippage to determin your mininum desired BNB
     minBnbReceived = Web3.utils.toWei(
       dripPriceInBNB * (0.9 - configuration.takeProfits.slippage),
       "ether"
     );
-    // console.log("minBnbReceived", minBnbReceived);
+
     // now do the actual swap
     await doSwap(dripBalance, minBnbReceived);
   };
