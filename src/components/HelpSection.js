@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
 import Help from "../Help.md";
+import { HelpCircle } from "lucide-react";
 
 const HelpSection = () => {
   const [helpText, setHelpText] = useState("");
@@ -14,7 +15,7 @@ const HelpSection = () => {
 
   return (
     <>
-      <button onClick={() => window.help_modal.showModal()}>🤷‍♂️ Help</button>
+      <button onClick={() => window.help_modal.showModal()}><HelpCircle color="#000000" /> Help</button>
       <dialog id="help_modal" className="modal">
         <form method="dialog" className="modal-box w-11/12 max-w-5xl absolute">
           <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">

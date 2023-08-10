@@ -6,7 +6,7 @@ import Account from "./Account";
  * Component that will have the list of the accounts
  * @returns HTML related to accounts
  */
-const AccountList = () => {
+const AccountList = ({setNotificationText, setTxnHash}) => {
   return (
     <div>
       <h1 className="text-3xl font-bold m-10 text-center">Accounts</h1>
@@ -25,7 +25,7 @@ const AccountList = () => {
           {accounts.length > 0 ? accounts.map((account) => {
              return (
               <tr key={account.address}>
-                <Account address={account.address} alias={account.alias} />
+                <Account address={account.address} alias={account.alias} setNotificationText={setNotificationText} setTxnHash={setTxnHash} />
               </tr>
             )
           }) : <tr><td colSpan={6} className="mx-auto text-center py-20">No Accounts</td></tr>}

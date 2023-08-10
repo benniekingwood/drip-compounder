@@ -16,18 +16,18 @@ import {
   prepareSendTransaction,
 } from "@wagmi/core";
 import configuration from "../configuration";
-import { toast } from "react-toastify";
 import CONTRACT_ADDRESSES from "../constants/contract-addresses";
 import DRIP_FOUNTAIN_ABI from "../constants/abis/drip-fountain-abi";
 import TOKEN_ADDRESSES from "../constants/token-addresses";
 import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
+import { Coins } from "lucide-react";
 
 /**
  * This component will handle all logic related to taking your profits
  * @param {Object} props - {Boolean} disabled, {Number} roi, {String} address, {Function} loadAccount
  * @returns HTML for the take profits button
  */
-const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
+const TakeProfitsButton = ({ disabled, roi, address, loadAccount, setNotificationText, setTxnHash }) => {
   let dripBalance = 0;
   let minBnbReceived = 0;
   const { chain } = useNetwork();
@@ -46,7 +46,8 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       prepareSwap();
     },
     onError(_error) {
-      toast.error("There was an issue claiming", _error);
+      console.error("There was an issue claiming", _error);
+      setNotificationText("Error. See console.");
     },
   });
 
@@ -67,6 +68,8 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
     );
 
     try {
+      setNotificationText('Sending BNB to Wallet...');
+
       const config = await prepareSendTransaction({
         account: address,
         to: configuration.takeProfits.sendToAddress,
@@ -77,24 +80,20 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       const receipt = await waitForTransaction({ hash });
 
       if (receipt.status === "success") {
-        toast.success(
-          () => (
-            <a
-              rel="noreferrer nofollow"
-              target="_blank"
-              href={`https://bscscan.com/tx/${receipt.transactionHash}`}
-            >
-              {receipt.transactionHash}
-            </a>
-          ),
-          {}
-        );
+        setTxnHash(receipt.transactionHash);
+        setNotificationText('Done.');
 
         // now reload the account to reflect the new data
         loadAccount.current(address);
+
+        setTimeout(() => {
+          window.notification_modal.close();
+          setNotificationText(null);
+        }, 7000);
       }
     } catch (e) {
-      toast.error("There was an issue sending to your CRO wallet", e);
+      console.error("There was an issue sending to your CRO wallet", e);
+      setNotificationText("Error. See console.");
     }
   };
 
@@ -107,6 +106,8 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
   const doSwap = async (dripBalance, minBnbReceived) => {
     if (dripBalance === 0 || minBnbReceived === 0) return;
     try {
+      setNotificationText('Swapping DRIP to BNB...');
+
       const { request } = await prepareWriteContract({
         address: CONTRACT_ADDRESSES.DRIP_FOUNTAIN,
         abi: DRIP_FOUNTAIN_ABI,
@@ -118,23 +119,16 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       const receipt = await waitForTransaction({ hash });
 
       if (receipt.status === "success") {
-        toast.success(
-          () => (
-            <a
-              rel="noreferrer nofollow"
-              target="_blank"
-              href={`https://bscscan.com/tx/${receipt.transactionHash}`}
-            >
-              {receipt.transactionHash}
-            </a>
-          ),
-          {}
-        );
+        setTxnHash(receipt.transactionHash);
+        setTimeout(() => {
+          setTxnHash(null);
+        }, 3000);
 
         await sendToCrytoDotComWallet();
       }
     } catch (e) {
-      toast.error("There was an issue swapping", e);
+      console.error("There was an issue swapping", e);
+      setNotificationText("Error. See console.");
     }
   };
 
@@ -177,9 +171,14 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       className={`${disabled ? "opacity-25" : ""} link link-hover ${
         roi >= 7 ? "text-lime-400" : ""
       }`}
-      onClick={disabled ? () => {} : () => claimWrite?.()}
+      onClick={disabled ? () => {} : () => { 
+        claimWrite?.()
+        setNotificationText('Claiming...');
+        window.notification_modal.showModal();
+      }
+    }
     >
-      💸 Take Profits
+      <Coins color="#00f900" /> Take Profits
     </a>
   );
 };

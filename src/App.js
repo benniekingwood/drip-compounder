@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { bsc } from "wagmi/chains";
@@ -6,8 +6,7 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import WalletSection from "./components/WalletSection";
 import HelpSection from "./components/HelpSection";
 import AccountList from "./components/AccountList";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import NotificationDialog from "./components/NoticationDialog";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [bsc],
@@ -30,6 +29,9 @@ const config = createConfig({
 });
 
 const App = () => {
+  const [notificationText, setNotificationText] = useState(null);
+  const [txnHash, setTxnHash] = useState(null);
+
   return (
     <>
       <WagmiConfig config={config}>
@@ -43,21 +45,9 @@ const App = () => {
                 <WalletSection />
               </li>
             </ul>
-
-            <ToastContainer
-              position="top-left"
-              autoClose={7000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={false}
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              className="w-full"
-            />
+            <NotificationDialog text={notificationText} txnHash={txnHash} />
           </header>
-          <AccountList />
+          <AccountList setNotificationText={setNotificationText} setTxnHash={setTxnHash} />
         </div>
       </WagmiConfig>
     </>

@@ -10,3 +10,7 @@
   top: 49px;
   left: 42px;
 }
+
+a {
+  all: revert;
+}
