@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Web3 from "web3";
 import {
   useContractWrite,
@@ -21,13 +21,15 @@ import DRIP_FOUNTAIN_ABI from "../constants/abis/drip-fountain-abi";
 import TOKEN_ADDRESSES from "../constants/token-addresses";
 import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
 import { Coins } from "lucide-react";
+import { Context } from "../contexts/NotificationContext";
 
 /**
  * This component will handle all logic related to taking your profits
  * @param {Object} props - {Boolean} disabled, {Number} roi, {String} address, {Function} loadAccount
  * @returns HTML for the take profits button
  */
-const TakeProfitsButton = ({ disabled, roi, address, loadAccount, setNotificationText, setTxnHash }) => {
+const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
+  const [notification, setNotification] = useContext(Context);
   let dripBalance = 0;
   let minBnbReceived = 0;
   const { chain } = useNetwork();
@@ -47,7 +49,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount, setNotificatio
     },
     onError(_error) {
       console.error("There was an issue claiming", _error);
-      setNotificationText("Error. See console.");
+      setNotification({ ...notification, text: "Error. See console." });
     },
   });
 
@@ -68,7 +70,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount, setNotificatio
     );
 
     try {
-      setNotificationText('Sending BNB to Wallet...');
+      setNotification({ ...notification, text: "Sending BNB to Wallet..." });
 
       const config = await prepareSendTransaction({
         account: address,
@@ -80,20 +82,19 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount, setNotificatio
       const receipt = await waitForTransaction({ hash });
 
       if (receipt.status === "success") {
-        setTxnHash(receipt.transactionHash);
-        setNotificationText('Done.');
+        setNotification({ text: "Done.", txnHash: receipt.transactionHash });
 
         // now reload the account to reflect the new data
         loadAccount.current(address);
 
         setTimeout(() => {
           window.notification_modal.close();
-          setNotificationText(null);
+          setNotification(null);
         }, 7000);
       }
     } catch (e) {
       console.error("There was an issue sending to your CRO wallet", e);
-      setNotificationText("Error. See console.");
+      setNotification({ text: "Error. See console.", txnHash: null });
     }
   };
 
@@ -106,7 +107,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount, setNotificatio
   const doSwap = async (dripBalance, minBnbReceived) => {
     if (dripBalance === 0 || minBnbReceived === 0) return;
     try {
-      setNotificationText('Swapping DRIP to BNB...');
+      setNotification({ ...notification, text: "Swapping DRIP to BNB...." });
 
       const { request } = await prepareWriteContract({
         address: CONTRACT_ADDRESSES.DRIP_FOUNTAIN,
@@ -119,16 +120,17 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount, setNotificatio
       const receipt = await waitForTransaction({ hash });
 
       if (receipt.status === "success") {
-        setTxnHash(receipt.transactionHash);
+        setNotification({ ...notification, txnHash: receipt.transactionHash });
+
         setTimeout(() => {
-          setTxnHash(null);
+          setNotification({ ...notification, txnHash: null });
         }, 3000);
 
         await sendToCrytoDotComWallet();
       }
     } catch (e) {
       console.error("There was an issue swapping", e);
-      setNotificationText("Error. See console.");
+      setNotification({ text: "Error. See console.", txnHash: null });
     }
   };
 
@@ -171,12 +173,15 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount, setNotificatio
       className={`${disabled ? "opacity-25" : ""} link link-hover ${
         roi >= 7 ? "text-lime-400" : ""
       }`}
-      onClick={disabled ? () => {} : () => { 
-        claimWrite?.()
-        setNotificationText('Claiming...');
-        window.notification_modal.showModal();
+      onClick={
+        disabled
+          ? () => {}
+          : () => {
+              claimWrite?.();
+              setNotification({ text: "Claiming...", txnHash: null });
+              window.notification_modal.showModal();
+            }
       }
-    }
     >
       <Coins color="#00f900" /> Take Profits
     </a>

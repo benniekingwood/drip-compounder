@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { configureChains, createConfig, WagmiConfig } from "wagmi";
 import { publicProvider } from "wagmi/providers/public";
 import { bsc } from "wagmi/chains";
@@ -7,6 +7,7 @@ import WalletSection from "./components/WalletSection";
 import HelpSection from "./components/HelpSection";
 import AccountList from "./components/AccountList";
 import NotificationDialog from "./components/NoticationDialog";
+import NotificationContext from "./contexts/NotificationContext";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [bsc],
@@ -29,9 +30,6 @@ const config = createConfig({
 });
 
 const App = () => {
-  const [notificationText, setNotificationText] = useState(null);
-  const [txnHash, setTxnHash] = useState(null);
-
   return (
     <>
       <WagmiConfig config={config}>
@@ -45,9 +43,11 @@ const App = () => {
                 <WalletSection />
               </li>
             </ul>
-            <NotificationDialog text={notificationText} txnHash={txnHash} />
           </header>
-          <AccountList setNotificationText={setNotificationText} setTxnHash={setTxnHash} />
+          <NotificationContext>
+            <NotificationDialog />
+            <AccountList />
+          </NotificationContext>
         </div>
       </WagmiConfig>
     </>

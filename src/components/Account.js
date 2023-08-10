@@ -14,7 +14,7 @@ import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
  * @param {Object} props - will have String for address and String for the account alias
  * @returns HTML table cells with the account information
  */
-const Account = ({ address, alias, setNotificationText, setTxnHash }) => {
+const Account = ({ address, alias }) => {
   const [available, setAvailable] = useState(0);
   const [deposits, setDeposits] = useState(0);
   const [roi, setRoi] = useState(0);
@@ -92,8 +92,6 @@ const Account = ({ address, alias, setNotificationText, setTxnHash }) => {
                   roi={roi}
                   address={address}
                   loadAccount={loadAccount}
-                  setNotificationText={setNotificationText}
-                  setTxnHash={setTxnHash}
                 />
               </li>
             )}
@@ -103,8 +101,6 @@ const Account = ({ address, alias, setNotificationText, setTxnHash }) => {
                 roi={roi}
                 address={address}
                 loadAccount={loadAccount}
-                setNotificationText={setNotificationText}
-                setTxnHash={setTxnHash}
               />
             </li>
           </ul>

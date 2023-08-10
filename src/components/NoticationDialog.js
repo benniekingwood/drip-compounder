@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CheckCircle2 } from "lucide-react";
+import { Context } from "../contexts/NotificationContext";
 
-const NotificationDialog = ({ text, txnHash }) => {
+const NotificationDialog = () => {
+  const [notification] = useContext(Context);
+  console.log('NotificationDialog', notification);
+
   return (
     <>
       <dialog id="notification_modal" className="modal">
@@ -16,10 +20,10 @@ const NotificationDialog = ({ text, txnHash }) => {
             x
           </button>
           <h1 className="font-bold text-center py-10 text-5xl">
-            {text ? text : ""}
+            {notification?.text ? notification?.text : ""}
           </h1>
           <div className="text-center text-xl relative">
-            {txnHash ? (
+            {notification?.txnHash ? (
               <>
                 <div className="w-fit mx-auto relative">
                   <div className="absolute -left-7 top-0.5">
@@ -30,9 +34,9 @@ const NotificationDialog = ({ text, txnHash }) => {
                     rel="noreferrer nofollow"
                     className="text-blue-600 no-underline"
                     target="_blank"
-                    href={`https://bscscan.com/tx/${txnHash}`}
+                    href={`https://bscscan.com/tx/${notification?.txnHash}`}
                   >
-                    {txnHash}
+                    {notification?.txnHash}
                   </a>
                 </div>
               </>
