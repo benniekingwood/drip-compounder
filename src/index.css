@@ -7,6 +7,10 @@
 }
 
 .active-account-info {
-  top: 49px;
+  top: 56px;
   left: 42px;
+}
+
+a {
+  all: revert;
 }

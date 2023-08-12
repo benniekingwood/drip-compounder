@@ -1,12 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction,
 } from "wagmi";
-import { toast } from "react-toastify";
 import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
 import CONTRACT_ADDRESSES from "../constants/contract-addresses";
+import { Recycle } from "lucide-react";
+import { Context } from "../contexts/NotificationContext";
 
 /**
  * Component for the compounding button. Will handle all logic related to
@@ -16,6 +17,7 @@ import CONTRACT_ADDRESSES from "../constants/contract-addresses";
  * @returns HTML button for compounding
  */
 const CompoundButton = ({ disabled, roi, address, loadAccount }) => {
+  const [notification, setNotification] = useContext(Context);
   const { config } = usePrepareContractWrite({
     address: CONTRACT_ADDRESSES.DRIP_FAUCET,
     abi: DRIP_FAUCET_ABI,
@@ -26,24 +28,18 @@ const CompoundButton = ({ disabled, roi, address, loadAccount }) => {
   const { isLoading } = useWaitForTransaction({
     hash: writeData?.hash,
     onSuccess() {
-      toast.success(
-        () => (
-          <a
-            rel="noreferrer nofollow"
-            className="text-blue-600"
-            target="_blank"
-            href={`https://bscscan.com/tx/${writeData.hash}`}
-          >
-            {writeData.hash}
-          </a>
-        ),
-        {}
-      );
+      setNotification({ text: 'Done.', txnHash: writeData.hash });
+
       // now reload the account to reflect the new data
       loadAccount.current(address);
+      setTimeout(() => {
+        window.notification_modal.close();
+        setNotification(null);
+      }, 7000);
     },
     onError(_error) {
-      toast.error("There was an issue claiming", _error);
+      console.error("There was an issue claiming", _error);
+      setNotification({ ...notification, text: 'Error. See console.' });
     },
   });
 
@@ -52,9 +48,13 @@ const CompoundButton = ({ disabled, roi, address, loadAccount }) => {
       className={`${
         isDisabled || isLoading ? "opacity-25" : ""
       } link link-hover  ${roi >= 1 ? "text-lime-400" : ""}`}
-      onClick={isDisabled || isLoading ? () => {} : () => write?.()}
+      onClick={isDisabled || isLoading ? () => {} : () => { 
+        write?.(); 
+        setNotification({ ...notification, text: 'Compounding...' });
+        window.notification_modal.showModal();
+      }}
     >
-      ♺ Compound
+      <Recycle color="#000000" /> Compound
     </a>
   );
 };

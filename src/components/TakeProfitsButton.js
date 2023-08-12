@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import Web3 from "web3";
 import {
   useContractWrite,
@@ -16,11 +16,12 @@ import {
   prepareSendTransaction,
 } from "@wagmi/core";
 import configuration from "../configuration";
-import { toast } from "react-toastify";
 import CONTRACT_ADDRESSES from "../constants/contract-addresses";
 import DRIP_FOUNTAIN_ABI from "../constants/abis/drip-fountain-abi";
 import TOKEN_ADDRESSES from "../constants/token-addresses";
 import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
+import { Coins } from "lucide-react";
+import { Context } from "../contexts/NotificationContext";
 
 /**
  * This component will handle all logic related to taking your profits
@@ -28,6 +29,7 @@ import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
  * @returns HTML for the take profits button
  */
 const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
+  const [notification, setNotification] = useContext(Context);
   let dripBalance = 0;
   let minBnbReceived = 0;
   const { chain } = useNetwork();
@@ -46,7 +48,8 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       prepareSwap();
     },
     onError(_error) {
-      toast.error("There was an issue claiming", _error);
+      console.error("There was an issue claiming", _error);
+      setNotification({ ...notification, text: "Error. See console." });
     },
   });
 
@@ -67,6 +70,8 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
     );
 
     try {
+      setNotification({ ...notification, text: "Sending BNB to Wallet..." });
+
       const config = await prepareSendTransaction({
         account: address,
         to: configuration.takeProfits.sendToAddress,
@@ -77,24 +82,19 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       const receipt = await waitForTransaction({ hash });
 
       if (receipt.status === "success") {
-        toast.success(
-          () => (
-            <a
-              rel="noreferrer nofollow"
-              target="_blank"
-              href={`https://bscscan.com/tx/${receipt.transactionHash}`}
-            >
-              {receipt.transactionHash}
-            </a>
-          ),
-          {}
-        );
+        setNotification({ text: "Done.", txnHash: receipt.transactionHash });
 
         // now reload the account to reflect the new data
         loadAccount.current(address);
+
+        setTimeout(() => {
+          window.notification_modal.close();
+          setNotification(null);
+        }, 7000);
       }
     } catch (e) {
-      toast.error("There was an issue sending to your CRO wallet", e);
+      console.error("There was an issue sending to your CRO wallet", e);
+      setNotification({ text: "Error. See console.", txnHash: null });
     }
   };
 
@@ -106,7 +106,10 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
    */
   const doSwap = async (dripBalance, minBnbReceived) => {
     if (dripBalance === 0 || minBnbReceived === 0) return;
+    const text = "Swapping DRIP to BNB....";
     try {
+      setNotification({ text, txnHash: null });
+
       const { request } = await prepareWriteContract({
         address: CONTRACT_ADDRESSES.DRIP_FOUNTAIN,
         abi: DRIP_FOUNTAIN_ABI,
@@ -118,23 +121,11 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       const receipt = await waitForTransaction({ hash });
 
       if (receipt.status === "success") {
-        toast.success(
-          () => (
-            <a
-              rel="noreferrer nofollow"
-              target="_blank"
-              href={`https://bscscan.com/tx/${receipt.transactionHash}`}
-            >
-              {receipt.transactionHash}
-            </a>
-          ),
-          {}
-        );
-
         await sendToCrytoDotComWallet();
       }
     } catch (e) {
-      toast.error("There was an issue swapping", e);
+      console.error("There was an issue swapping", e);
+      setNotification({ text: "Error. See console.", txnHash: null });
     }
   };
 
@@ -177,9 +168,17 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       className={`${disabled ? "opacity-25" : ""} link link-hover ${
         roi >= 7 ? "text-lime-400" : ""
       }`}
-      onClick={disabled ? () => {} : () => claimWrite?.()}
+      onClick={
+        disabled
+          ? () => {}
+          : () => {
+              claimWrite?.();
+              setNotification({ text: "Claiming...", txnHash: null });
+              window.notification_modal.showModal();
+            }
+      }
     >
-      💸 Take Profits
+      <Coins color="#00f900" /> Take Profits
     </a>
   );
 };

@@ -6,8 +6,8 @@ import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import WalletSection from "./components/WalletSection";
 import HelpSection from "./components/HelpSection";
 import AccountList from "./components/AccountList";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import NotificationDialog from "./components/NoticationDialog";
+import NotificationContext from "./contexts/NotificationContext";
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(
   [bsc],
@@ -43,21 +43,11 @@ const App = () => {
                 <WalletSection />
               </li>
             </ul>
-
-            <ToastContainer
-              position="top-left"
-              autoClose={7000}
-              hideProgressBar={false}
-              newestOnTop={false}
-              closeOnClick={false}
-              rtl={false}
-              pauseOnFocusLoss
-              draggable
-              pauseOnHover
-              className="w-full"
-            />
           </header>
-          <AccountList />
+          <NotificationContext>
+            <NotificationDialog />
+            <AccountList />
+          </NotificationContext>
         </div>
       </WagmiConfig>
     </>

@@ -1,6 +1,7 @@
 import React from "react";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import accounts from "../models/accounts";
+import { Info } from "lucide-react";
 
 /**
  * @returns HTML with wallet connect button and information on active connected account
@@ -30,7 +31,8 @@ const WalletSection = () => {
         ))}
         {isConnected && (
           <div className="absolute active-account-info">
-            ℹ Current Account is {account?.alias}
+            <span className="absolute -top-0.5 -left-8"><Info color="#000000" /> </span>
+            Current Account is {account?.alias}
           </div>
         )}
         {error && <div>{error.message}</div>}
