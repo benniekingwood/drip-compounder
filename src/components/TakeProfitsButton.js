@@ -106,8 +106,9 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
    */
   const doSwap = async (dripBalance, minBnbReceived) => {
     if (dripBalance === 0 || minBnbReceived === 0) return;
+    const text = "Swapping DRIP to BNB....";
     try {
-      setNotification({ ...notification, text: "Swapping DRIP to BNB...." });
+      setNotification({ text, txnHash: null });
 
       const { request } = await prepareWriteContract({
         address: CONTRACT_ADDRESSES.DRIP_FOUNTAIN,
@@ -120,12 +121,6 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       const receipt = await waitForTransaction({ hash });
 
       if (receipt.status === "success") {
-        setNotification({ ...notification, txnHash: receipt.transactionHash });
-
-        setTimeout(() => {
-          setNotification({ ...notification, txnHash: null });
-        }, 3000);
-
         await sendToCrytoDotComWallet();
       }
     } catch (e) {

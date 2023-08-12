@@ -51,7 +51,6 @@ const CompoundButton = ({ disabled, roi, address, loadAccount }) => {
       onClick={isDisabled || isLoading ? () => {} : () => { 
         write?.(); 
         setNotification({ ...notification, text: 'Compounding...' });
-        console.log('CompoundButton', notification);
         window.notification_modal.showModal();
       }}
     >

@@ -2,9 +2,12 @@ import React, { useContext } from "react";
 import { CheckCircle2 } from "lucide-react";
 import { Context } from "../contexts/NotificationContext";
 
+/**
+ * Dialog component for notifications
+ * @returns HTML for the notification dialog
+ */
 const NotificationDialog = () => {
   const [notification] = useContext(Context);
-  console.log('NotificationDialog', notification);
 
   return (
     <>
