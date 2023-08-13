@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import accounts from "../models/accounts";
 import Account from "./Account";
 
@@ -7,6 +7,8 @@ import Account from "./Account";
  * @returns HTML related to accounts
  */
 const AccountList = () => {
+  const [totalAvailable, setTotalAvailable] = useState(0);
+
   return (
     <div>
       <h1 className="text-3xl font-bold m-10 text-center">Accounts</h1>
@@ -15,20 +17,43 @@ const AccountList = () => {
           <tr>
             <th className="px-5">Name</th>
             <th className="px-5">Address</th>
-            <th className="px-5">Available</th>
+            <th className="px-5">
+              <div className="indicator">
+                {totalAvailable > 0 && (
+                  <span className="indicator-item badge badge-primary text-success -top-1">
+                    {totalAvailable}
+                  </span>
+                )}
+                <div className="grid w-36 h-3 place-items-center">
+                  Available
+                </div>
+              </div>
+            </th>
             <th className="px-5">Deposits</th>
             <th className="px-5">ROI</th>
             <th className="px-5"></th>
           </tr>
         </thead>
         <tbody>
-          {accounts.length > 0 ? accounts.map((account) => {
-             return (
-              <tr key={account.address}>
-                <Account address={account.address} alias={account.alias} />
-              </tr>
-            )
-          }) : <tr><td colSpan={6} className="mx-auto text-center py-20">No Accounts</td></tr>}
+          {accounts.length > 0 ? (
+            accounts.map((account) => {
+              return (
+                <tr key={account.address}>
+                  <Account
+                    address={account.address}
+                    alias={account.alias}
+                    updateTotalAvailable={setTotalAvailable}
+                  />
+                </tr>
+              );
+            })
+          ) : (
+            <tr>
+              <td colSpan={6} className="mx-auto text-center py-20">
+                No Accounts
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
     </div>
