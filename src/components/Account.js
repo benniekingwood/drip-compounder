@@ -11,10 +11,10 @@ import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
 
 /**
  * Component that will handle the individual account information
- * @param {Object} props - will have String for address and String for the account alias
+ * @param {Object} props - {String} address, {String} account alias, {Function} updateTotalAvailable
  * @returns HTML table cells with the account information
  */
-const Account = ({ address, alias }) => {
+const Account = ({ address, alias, updateTotalAvailable }) => {
   const [available, setAvailable] = useState(0);
   const [deposits, setDeposits] = useState(0);
   const [roi, setRoi] = useState(0);
@@ -51,7 +51,14 @@ const Account = ({ address, alias }) => {
       if (data) {
         // set the available
         let raw = Web3.utils.fromWei(data[0].result, "ether");
-        setAvailable(parseFloat(raw).toFixed(2));
+        const currAvailable = parseFloat(raw).toFixed(2);
+
+        setAvailable(currAvailable);
+
+        // update the totalAvailable to take profits if > minim
+        if (deposits > configuration.takeProfits.minimum) {
+          updateTotalAvailable((prev) => (Number(prev) + Number(currAvailable)).toFixed(2));
+        }
 
         // now set the deposits
         raw = Web3.utils.fromWei(data[1].result[2], "ether");
@@ -71,7 +78,7 @@ const Account = ({ address, alias }) => {
     <>
       <td className="px-5 pb-2">{alias}</td>
       <td className="px-5 pb-2">{address}</td>
-      <td className="px-5 pb-2">{available}</td>
+      <td className="px-5 pb-2 text-center">{available}</td>
       <td className="px-5 pb-2">{deposits}</td>
       <td className="px-5 pb-2">{roi}%</td>
       <td className="px-5 pb-2">
