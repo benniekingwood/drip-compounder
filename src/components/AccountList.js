@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import accounts from "../models/accounts";
 import Account from "./Account";
 
@@ -8,6 +8,20 @@ import Account from "./Account";
  */
 const AccountList = () => {
   const [totalAvailable, setTotalAvailable] = useState(0);
+  const [myAccounts, setMyAccounts] = useState([]);
+
+  useEffect(() => {
+    // intially load the accounts
+    setMyAccounts(accounts);
+
+    const intervalId = setInterval(() => {
+      // reload the accounts every 5 minutes (300000ms)
+      setMyAccounts(accounts);
+    }, 300000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [accounts]);
 
   return (
     <div>
@@ -35,8 +49,8 @@ const AccountList = () => {
           </tr>
         </thead>
         <tbody>
-          {accounts.length > 0 ? (
-            accounts.map((account) => {
+          {myAccounts.length > 0 ? (
+            myAccounts.map((account) => {
               return (
                 <tr key={account.address}>
                   <Account
