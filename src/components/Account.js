@@ -23,6 +23,16 @@ const Account = ({ address, alias, updateTotalAvailable }) => {
   const loadAccount = useRef(0);
 
   useEffect(() => {
+    const intervalId = setInterval(() => {
+      // reload the account every 5 minutes (300000ms)
+      loadAccount.current(address);
+    }, 300000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [address]);
+
+  useEffect(() => {
     /**
      * Function will load claim and available/deposit information for the
      * address passed in
@@ -57,7 +67,7 @@ const Account = ({ address, alias, updateTotalAvailable }) => {
 
         // update the totalAvailable to take profits if > minim
         if (deposits > configuration.takeProfits.minimum) {
-          updateTotalAvailable((prev) => (Number(prev) + Number(currAvailable)).toFixed(2));
+          updateTotalAvailable(address, Number(currAvailable).toFixed(2));
         }
 
         // now set the deposits
