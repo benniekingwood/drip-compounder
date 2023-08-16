@@ -8,20 +8,25 @@ import Account from "./Account";
  */
 const AccountList = () => {
   const [totalAvailable, setTotalAvailable] = useState(0);
-  const [myAccounts, setMyAccounts] = useState([]);
+  const [totalAvailableMap, setTotalAvailableMap] = useState({});
+  // small helper method to update the total available map
+  const updateTotalAvailable = (address, amount) => {
+    setTotalAvailableMap((prev) => {
+      const newMap = Object.assign({}, prev); // creating copy of state variable jasper
+      newMap[address] = Number(amount); // update the name property, assign a new value
+      return newMap;
+    });
+  };
 
   useEffect(() => {
-    // intially load the accounts
-    setMyAccounts(accounts);
+    // recompute the account total available
+    const newTotal = Object.values(totalAvailableMap).reduce(
+      (a, b) => Number(a) + Number(b),
+      0
+    );
 
-    const intervalId = setInterval(() => {
-      // reload the accounts every 5 minutes (300000ms)
-      setMyAccounts(accounts);
-    }, 300000);
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, [accounts]);
+    setTotalAvailable(newTotal.toFixed(2));
+  }, [totalAvailableMap]);
 
   return (
     <div>
@@ -49,14 +54,14 @@ const AccountList = () => {
           </tr>
         </thead>
         <tbody>
-          {myAccounts.length > 0 ? (
-            myAccounts.map((account) => {
+          {accounts.length > 0 ? (
+            accounts.map((account) => {
               return (
                 <tr key={account.address}>
                   <Account
                     address={account.address}
                     alias={account.alias}
-                    updateTotalAvailable={setTotalAvailable}
+                    updateTotalAvailable={updateTotalAvailable}
                   />
                 </tr>
               );
