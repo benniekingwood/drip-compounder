@@ -12,8 +12,8 @@ const AccountList = () => {
   // small helper method to update the total available map
   const updateTotalAvailable = (address, amount) => {
     setTotalAvailableMap((prev) => {
-      const newMap = Object.assign({}, prev); // creating copy of state variable jasper
-      newMap[address] = Number(amount); // update the name property, assign a new value
+      const newMap = Object.assign({}, prev);
+      newMap[address] = Number(amount);
       return newMap;
     });
   };
