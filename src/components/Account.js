@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState, useRef } from "react";
 import { useAccount } from "wagmi";
 import { readContracts } from "@wagmi/core";
-// import Web3 from "web3";
+import Web3 from "web3";
 // import TakeProfitsButton from "./TakeProfitsButton";
 // import CompoundButton from "./CompoundButton";
 import CONTRACT_ADDRESSES from "../constants/contract-addresses";
@@ -63,8 +63,8 @@ const Account = ({ address, alias //, updateTotalAvailable
         // eslint-disable-next-line no-debugger
         debugger;
         // set the available
-        let raw = Number(data[0].result);
-        // let raw = Web3.utils.fromWei(Number(data[0].result), "ether");
+        // let raw = Number(data[0].result);
+        let raw = Web3.utils.fromWei(Number(data[0].result), "ether");
         // let t = Web3.utils.fromWei(data[0].result, "ether");
         // let r = Web3.utils.fromWei(Web3.utils.toNumber(data[0].result), "ether");
         // console.log(raw, t, r);
