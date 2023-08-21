@@ -63,9 +63,10 @@ const Account = ({ address, alias //, updateTotalAvailable
         // eslint-disable-next-line no-debugger
         debugger;
         // set the available
-        console.log('1');
-        let raw = Web3.utils.fromWei(data[0].result, "ether");
-        console.log('2');
+        let raw = Web3.utils.fromWei(Web3.utils.toNumber(data[0].result), "ether");
+        // let t = Web3.utils.fromWei(data[0].result, "ether");
+        // let r = Web3.utils.fromWei(Web3.utils.toNumber(data[0].result), "ether");
+        // console.log(raw, t, r);
         const currAvailable = parseFloat(raw).toFixed(2);
 
 
@@ -77,13 +78,12 @@ const Account = ({ address, alias //, updateTotalAvailable
         }
 
         // now set the deposits
-        // raw = Web3.utils.fromWei(data[1].result[2], "ether");
+        // raw = Web3.utils.fromWei(data[1].result[2] / 1000000000n, "ether");
         // console.log('3');
         // setDeposits(parseFloat(raw).toFixed(2));
 
         // set the roi for the account
         // setRoi(((available / deposits) * 100).toFixed(2));
-        console.log('4');
       }
     };
 
