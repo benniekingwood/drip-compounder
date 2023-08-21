@@ -13,7 +13,9 @@ const AccountList = () => {
   const updateTotalAvailable = (address, amount) => {
     setTotalAvailableMap((prev) => {
       const newMap = Object.assign({}, prev);
-      newMap[address] = Number(amount);
+      // newMap[address] = Number(amount);
+      newMap[address] = (amount);
+
       return newMap;
     });
   };
@@ -21,7 +23,9 @@ const AccountList = () => {
   useEffect(() => {
     // recompute the account total available
     const newTotal = Object.values(totalAvailableMap).reduce(
-      (a, b) => Number(a) + Number(b),
+      // (a, b) => Number(a) + Number(b),
+      (a, b) => (a) + (b),
+
       0
     );
 
