@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState, useRef } from "react";
 import { useAccount } from "wagmi";
 import { readContracts } from "@wagmi/core";
-// import Web3 from "web3";
+import Web3 from "web3";
 // import TakeProfitsButton from "./TakeProfitsButton";
 // import CompoundButton from "./CompoundButton";
 import CONTRACT_ADDRESSES from "../constants/contract-addresses";
@@ -16,7 +16,7 @@ import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
  */
 const Account = ({ address, alias //, updateTotalAvailable
  }) => {
-  const [available ] = useState(0);
+  const [available, setAvailable ] = useState(0);
   const [deposits ] = useState(0);
   const [roi ] = useState(0);
   const { isConnected, address: selectedAddress } = useAccount();
@@ -64,12 +64,12 @@ const Account = ({ address, alias //, updateTotalAvailable
         debugger;
         // set the available
         console.log('1');
-        // let raw = Web3.utils.fromWei(data[0].result, "ether");
+        let raw = Web3.utils.fromWei(data[0].result, "ether");
         console.log('2');
-        // const currAvailable = parseFloat(raw).toFixed(2);
+        const currAvailable = parseFloat(raw).toFixed(2);
 
 
-        // setAvailable(currAvailable);
+        setAvailable(currAvailable);
 
         // update the totalAvailable to take profits if > minim
         if (deposits > configuration.takeProfits.minimum) {
