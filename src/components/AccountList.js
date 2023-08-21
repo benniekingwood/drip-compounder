@@ -31,7 +31,7 @@ const AccountList = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold m-10 text-center">Accounts</h1>
+      <h1 className="text-3xl font-bold m-10 text-center">DRIP Dashboard</h1>
       <table className="table-auto mx-auto font-mono">
         <thead>
           <tr>
