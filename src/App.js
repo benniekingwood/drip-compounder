@@ -5,7 +5,7 @@ import { bsc } from "wagmi/chains";
 import { MetaMaskConnector } from "wagmi/connectors/metaMask";
 import WalletSection from "./components/WalletSection";
 import HelpSection from "./components/HelpSection";
-import AccountList from "./components/AccountList";
+// import AccountList from "./components/AccountList";
 import NotificationDialog from "./components/NoticationDialog";
 import NotificationContext from "./contexts/NotificationContext";
 
@@ -46,7 +46,7 @@ const App = () => {
           </header>
           <NotificationContext>
             <NotificationDialog />
-            <AccountList />
+            {/* <AccountList /> */}
           </NotificationContext>
         </div>
       </WagmiConfig>
