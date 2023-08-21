@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import accounts from "../models/accounts";
-// import Account from "./Account";
+import Account from "./Account";
 
 /**
  * Component that will have the list of the accounts
@@ -64,11 +64,11 @@ const AccountList = () => {
             accounts.map((account) => {
               return (
                 <tr key={account.address}>
-                  {/* <Account
+                  <Account
                     address={account.address}
                     alias={account.alias}
-                    updateTotalAvailable={updateTotalAvailable}
-                  /> */}
+                    updateTotalAvailable={() => {}}
+                  />
                 </tr>
               );
             })
