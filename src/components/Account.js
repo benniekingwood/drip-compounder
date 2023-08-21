@@ -3,8 +3,8 @@ import { useEffect, useState, useRef } from "react";
 import { useAccount } from "wagmi";
 import { readContracts } from "@wagmi/core";
 import Web3 from "web3";
-import TakeProfitsButton from "./TakeProfitsButton";
-import CompoundButton from "./CompoundButton";
+// import TakeProfitsButton from "./TakeProfitsButton";
+// import CompoundButton from "./CompoundButton";
 import CONTRACT_ADDRESSES from "../constants/contract-addresses";
 import configuration from "../configuration";
 import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
@@ -63,8 +63,11 @@ const Account = ({ address, alias //, updateTotalAvailable
         // eslint-disable-next-line no-debugger
         debugger;
         // set the available
+        console.log('1');
         let raw = Web3.utils.fromWei(data[0].result, "ether");
+        console.log('2');
         const currAvailable = parseFloat(raw).toFixed(2);
+
 
         setAvailable(currAvailable);
 
@@ -75,10 +78,12 @@ const Account = ({ address, alias //, updateTotalAvailable
 
         // now set the deposits
         raw = Web3.utils.fromWei(data[1].result[2], "ether");
+        console.log('3');
         setDeposits(parseFloat(raw).toFixed(2));
 
         // set the roi for the account
         setRoi(((available / deposits) * 100).toFixed(2));
+        console.log('4');
       }
     };
 
@@ -107,21 +112,21 @@ const Account = ({ address, alias //, updateTotalAvailable
           >
             {deposits > configuration.takeProfits.minimum && (
               <li>
-                <TakeProfitsButton
+                {/* <TakeProfitsButton
                   disabled={buttonDisabled}
                   roi={roi}
                   address={address}
                   loadAccount={loadAccount}
-                />
+                /> */}
               </li>
             )}
             <li>
-              <CompoundButton
+              {/* <CompoundButton
                 disabled={buttonDisabled}
                 roi={roi}
                 address={address}
                 loadAccount={loadAccount}
-              />
+              /> */}
             </li>
           </ul>
         </div>
