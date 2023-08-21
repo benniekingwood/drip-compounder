@@ -9,7 +9,6 @@ import Account from "./Account";
 const AccountList = () => {
   const [totalAvailable, setTotalAvailable] = useState(0);
   const [totalAvailableMap, setTotalAvailableMap] = useState({});
-
   // small helper method to update the total available map
   const updateTotalAvailable = (address, amount) => {
     setTotalAvailableMap((prev) => {

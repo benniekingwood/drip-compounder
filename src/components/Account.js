@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { readContracts } from "@wagmi/core";
 import Web3 from "web3";
 import TakeProfitsButton from "./TakeProfitsButton";
-// import CompoundButton from "./CompoundButton";
+import CompoundButton from "./CompoundButton";
 import CONTRACT_ADDRESSES from "../constants/contract-addresses";
 import configuration from "../configuration";
 import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
@@ -61,7 +61,6 @@ const Account = ({ address, alias, updateTotalAvailable }) => {
       if (data) {
         // set the available
         let raw = Web3.utils.fromWei(data[0].result, "ether");
-
         const currAvailable = parseFloat(raw).toFixed(2);
 
         setAvailable(currAvailable);
@@ -114,12 +113,12 @@ const Account = ({ address, alias, updateTotalAvailable }) => {
               </li>
             )}
             <li>
-              {/* <CompoundButton
+              <CompoundButton
                 disabled={buttonDisabled}
                 roi={roi}
                 address={address}
                 loadAccount={loadAccount}
-              /> */}
+              />
             </li>
           </ul>
         </div>
