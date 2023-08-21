@@ -60,6 +60,8 @@ const Account = ({ address, alias //, updateTotalAvailable
       });
 
       if (data) {
+        // eslint-disable-next-line no-debugger
+        debugger;
         // set the available
         let raw = Web3.utils.fromWei(data[0].result, "ether");
         const currAvailable = parseFloat(raw).toFixed(2);
