@@ -150,8 +150,7 @@ const TakeProfitsButton = ({ disabled, roi, address, loadAccount }) => {
       functionName: "getTokenToBnbInputPrice",
       args: [dripBalance],
     });
-// eslint-disable-next-line no-debugger
-debugger;
+
     const dripPriceInBNB = Web3.utils.fromWei(data, "ether");
 
     // apply the slippage to determin your mininum desired BNB

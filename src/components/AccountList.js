@@ -8,26 +8,22 @@ import Account from "./Account";
  */
 const AccountList = () => {
   const [totalAvailable, setTotalAvailable] = useState(0);
-  // const [totalAvailableMap, setTotalAvailableMap] = useState({});
-  const [totalAvailableMap] = useState({});
+  const [totalAvailableMap, setTotalAvailableMap] = useState({});
 
   // small helper method to update the total available map
-  // const updateTotalAvailable = (address, amount) => {
-  //   setTotalAvailableMap((prev) => {
-  //     const newMap = Object.assign({}, prev);
-  //     // newMap[address] = Number(amount);
-  //     newMap[address] = (amount);
+  const updateTotalAvailable = (address, amount) => {
+    setTotalAvailableMap((prev) => {
+      const newMap = Object.assign({}, prev);
+      newMap[address] = Number(amount);
 
-  //     return newMap;
-  //   });
-  // };
+      return newMap;
+    });
+  };
 
   useEffect(() => {
     // recompute the account total available
     const newTotal = Object.values(totalAvailableMap).reduce(
-      // (a, b) => Number(a) + Number(b),
-      (a, b) => (a) + (b),
-
+      (a, b) => Number(a) + Number(b),
       0
     );
 
@@ -67,7 +63,7 @@ const AccountList = () => {
                   <Account
                     address={account.address}
                     alias={account.alias}
-                    updateTotalAvailable={() => {}}
+                    updateTotalAvailable={updateTotalAvailable}
                   />
                 </tr>
               );
