@@ -14,7 +14,8 @@ import DRIP_FAUCET_ABI from "../constants/abis/drip-faucet-abi";
  * @param {Object} props - {String} address, {String} account alias, {Function} updateTotalAvailable
  * @returns HTML table cells with the account information
  */
-const Account = ({ address, alias, updateTotalAvailable }) => {
+const Account = ({ address, alias //, updateTotalAvailable
+ }) => {
   const [available, setAvailable] = useState(0);
   const [deposits, setDeposits] = useState(0);
   const [roi, setRoi] = useState(0);
@@ -67,7 +68,7 @@ const Account = ({ address, alias, updateTotalAvailable }) => {
 
         // update the totalAvailable to take profits if > minim
         if (deposits > configuration.takeProfits.minimum) {
-          updateTotalAvailable(address, Number(currAvailable).toFixed(2));
+          // updateTotalAvailable(address, Number(currAvailable).toFixed(2));
         }
 
         // now set the deposits
