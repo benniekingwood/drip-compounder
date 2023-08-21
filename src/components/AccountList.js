@@ -14,6 +14,7 @@ const AccountList = () => {
     setTotalAvailableMap((prev) => {
       const newMap = Object.assign({}, prev);
       newMap[address] = Number(amount);
+
       return newMap;
     });
   };
